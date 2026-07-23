@@ -11,35 +11,35 @@ from imblearn.pipeline import Pipeline as ImbPipeline
 from src.config import RANDOM_STATE
 
 
-def train_and_save_model(X_train, y_train, preprocessor, docelowy_model, num_cols, cat_podstawowe, cat_wyposazenie):
-    print("Rozpoczęcie budowy i uczenia finalnego potoku...")
-    
+def train_and_save_model(X_train, y_train, preprocessor, target_model, numeric_columns, basic_categorical_columns, equipment_categorical_columns):
+    print("Starting to build and train the final pipeline...")
+
     # Budowa potoku z przekazanym, skonfigurowanym wcześniej modelem
-    kroki_do_pipeline = list(preprocessor.steps) + [("Model", docelowy_model)]
-    finalny_pipeline = ImbPipeline(steps=kroki_do_pipeline)
-    
+    pipeline_steps = list(preprocessor.steps) + [("Model", target_model)]
+    final_pipeline = ImbPipeline(steps=pipeline_steps)
+
     # Jednorazowe trenowanie na całym zbiorze
-    finalny_pipeline.fit(X_train, y_train)
-    print("Uczenie zakończone.")
+    final_pipeline.fit(X_train, y_train)
+    print("Training completed.")
 
     # Budowa słownika ze słownikami unikalnych wartości
-    kategorie_kolumn = {
+    column_categories = {
         col: list(X_train[col].unique())
         for col in X_train.select_dtypes(include=["object", "category", "string"])
     }
 
     # Zbiór informacji o środowisku uczenia
-    metadane = {
-        "model_name": "XGBoost",
+    metadata = {
+        "model_name": type(target_model.regressor).__name__,
         "target_name": "cena",
         'kolumny_wejsciowe_wszystkie': list(X_train.columns),
-        'kolumny_numeryczne': num_cols,
-        'kolumny_kategoryczne_podstawowe': cat_podstawowe,
-        'kolumny_kategoryczne_wyposazenie': cat_wyposazenie,
+        'kolumny_numeryczne': numeric_columns,
+        'kolumny_kategoryczne_podstawowe': basic_categorical_columns,
+        'kolumny_kategoryczne_wyposazenie': equipment_categorical_columns,
         "train_shape": X_train.shape,
-        "test_size": 0.2, 
+        "test_size": 0.2,
         "random_state": RANDOM_STATE,
-        "kategorie_kolumn": kategorie_kolumn,
+        "kategorie_kolumn": column_categories,
         "python_version": sys.version.split()[0],
         "library_versions": {
             "pandas": pd.__version__,
@@ -53,9 +53,9 @@ def train_and_save_model(X_train, y_train, preprocessor, docelowy_model, num_col
     }
 
     # Zrzut obiektów do plików
-    joblib.dump(finalny_pipeline, 'models/model_wyceny_pojazdow.pkl')
-    joblib.dump(metadane, 'models/metadane_modelu.pkl')
-    
-    print("Zapisano model i metadane w katalogu 'models/'.")
-    
-    return finalny_pipeline
+    joblib.dump(final_pipeline, 'models/car_price_model.pkl')
+    joblib.dump(metadata, 'models/model_metadata.pkl')
+
+    print("Model and metadata saved to the 'models/' directory.")
+
+    return final_pipeline
