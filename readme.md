@@ -18,7 +18,7 @@ The model looks at key technical and equipment features. It helps to find the re
 This tool might be useful for professional sellers. It helps them set the right price for their offers. It is also useful for buyers. Buyers can use it to find good deals and avoid paying too much for a car.
 
 ## Data
-The training data comes from public car listings on Otomoto. The data was collected only for non-commercial, academic purposes. The dataset has about 5000 records and 30 features.
+The training data comes from public car listings on Otomoto. The data was collected only for non-commercial, academic purposes. The dataset has about 5000 records and 30 features including target (price).
 
 ## Model Variables
 | Feature | Type | Description |
@@ -36,7 +36,6 @@ The training data comes from public car listings on Otomoto. The data was collec
 | **Voivodeship** | Categorical | Polish region where the car is registered or sold. |
 | **Body type** | Categorical | Type of car body (e.g., Sedan, Estate, SUV, Hatchback). |
 | **Color** | Categorical | Color of the car's paint. |
-| **Damaged** | Categorical | Shows if the car has body or mechanical damage (Yes/No). |
 | **Seller type** | Categorical | Professional or private seller. |
 | **Leather upholstery** | Categorical | Shows if the seats have leather upholstery (Yes/No). |
 | **Imported** | Categorical | Shows if the car is from a Polish dealership (Yes/No). |

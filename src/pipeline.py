@@ -13,6 +13,7 @@ from src.transformers import (
     ScaledKNNImputer,
     remove_outliers_by_group
 )
+from src.config import EQUIPMENT_CATEGORICAL_COLUMNS
 
 def build_preprocessing_pipeline():
     outlier_removal_step = FunctionSampler(func=remove_outliers_by_group, validate=False)
@@ -39,8 +40,11 @@ def build_preprocessing_pipeline():
             ('simple_imputer_cat',
                 SimpleImputer(strategy='most_frequent'),
                 ['wojewodztwo', 'paliwo', 'kolor', 'liczba_drzwi',
-                'typ_sprzedawcy', 'serwis_aso', 'importowany', 'skorzana_tapicerka',
-                'dach_panoramiczny', 'swiatla_led']),
+                'typ_sprzedawcy']),
+
+            ('simple_imputer_equipment',
+                SimpleImputer(strategy='most_frequent'),
+                EQUIPMENT_CATEGORICAL_COLUMNS),
 
             ('simple_imputer_num',
                 SimpleImputer(strategy='median'),
