@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Wycena pojazdu używanego</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <header class="site-header">
+        <h1>Wycena pojazdu używanego</h1>
+        <p class="subtitle">
+            Szacowanie ceny rynkowej na podstawie modelu wytrenowanego na ogłoszeniach
+            z polskiego rynku wtórnego.
+        </p>
+    </header>
+
+    <main>
+        <form id="prediction-form" novalidate>
+            <fieldset>
+                <legend>Podstawowe</legend>
+                <div class="grid" id="section-basic"></div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Dane techniczne</legend>
+                <div class="grid" id="section-technical"></div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Wyposażenie</legend>
+                <div class="field slider-field" id="equipment-level">
+                    <label for="poziom_wyposazenia">
+                        Poziom wyposażenia
+                        <span class="hint">liczba dodatków w ogłoszeniu</span>
+                    </label>
+                    <div class="slider-row">
+                        <input type="range" id="poziom_wyposazenia" name="poziom_wyposazenia"
+                               min="0" max="150" step="1" value="38">
+                        <output id="poziom_wyposazenia_value">38</output>
+                    </div>
+                    <div class="presets" id="equipment-presets"></div>
+                    <label class="checkbox skip-equipment">
+                        <input type="checkbox" id="poziom_wyposazenia_skip">
+                        <span>Nie wiem — użyj wartości typowej</span>
+                    </label>
+                </div>
+                <div class="checkbox-grid" id="section-equipment"></div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Sprzedaż</legend>
+                <div class="grid" id="section-sale"></div>
+            </fieldset>
+
+            <div class="actions">
+                <button type="submit" id="submit-button">Wyceń pojazd</button>
+                <button type="reset" class="secondary">Wyczyść</button>
+            </div>
+        </form>
+
+        <section id="result" class="result" hidden aria-live="polite">
+            <p class="result-label">Szacowana wartość</p>
+            <p class="price" id="result-price"></p>
+            <p class="range" id="result-range"></p>
+            <ul class="warnings" id="result-warnings"></ul>
+        </section>
+
+        <section id="errors" class="errors" hidden aria-live="assertive">
+            <p class="errors-title">Popraw dane w formularzu</p>
+            <ul id="errors-list"></ul>
+        </section>
+    </main>
+
+    <footer id="model-info" class="site-footer"></footer>
+
+    <script src="/app.js"></script>
+</body>
+</html>

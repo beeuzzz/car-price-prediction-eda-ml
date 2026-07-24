@@ -86,7 +86,6 @@ def extract_automatic_air_conditioning(listings):
                 values = params["air_conditioning_type"].get("values", [])
                 if isinstance(values, list) and len(values) > 0:
                     label = values[0].get("label", "").lower()
-                    # Wyłapujemy słowo "automatyczna" w wartości
                     if "automatyczna" in label:
                         extracted_value = "Tak"
         automatic_air_conditioning_values.append(extracted_value)
@@ -111,7 +110,6 @@ def extract_heated_seats(listings):
         extracted_value = "Nie"
         if isinstance(listing, dict):
             params = listing.get("parametersDict", {})
-            # Sprawdzamy fotel kierowcy jako reprezentatywny
             if isinstance(params, dict) and "heated_seat_driver" in params:
                 extracted_value = "Tak"
         heated_seats_values.append(extracted_value)
@@ -154,7 +152,6 @@ def extract_origin_country(listings):
             params = listing.get("parametersDict", {})
             if isinstance(params, dict):
 
-                # Najpierw sprawdzamy konkretny kraj (żeby wyłapać USA)
                 country = params.get("country_origin", {})
                 if isinstance(country, dict) and country.get("values"):
                     values = country.get("values", [])
@@ -167,7 +164,6 @@ def extract_origin_country(listings):
                         else:
                             extracted_value = "Importowany"
 
-                # Jeśli brak podanego kraju, ale ma ogólną flagę "Importowany"
                 elif "is_imported_car" in params:
                     imported = params.get("is_imported_car", {})
                     if isinstance(imported, dict) and imported.get("values"):
@@ -186,7 +182,6 @@ def extract_leather_upholstery(listings):
         extracted_value = "Nie"
         if isinstance(listing, dict):
             params = listing.get("parametersDict", {})
-            # Sprawdzamy, czy w słowniku w ogóle występuje klucz tapicerki
             if isinstance(params, dict) and "upholstery_type" in params:
                 extracted_value = "Tak"
         leather_upholstery_values.append(extracted_value)
@@ -222,34 +217,15 @@ def extract_equipment_count(listings):
         count = 0
         if isinstance(listing, dict):
             equipment_list = listing.get("equipment")
-            # Sprawdzenie, czy klucz istnieje i jest listą
             if isinstance(equipment_list, list):
                 for category in equipment_list:
                     if isinstance(category, dict):
                         values = category.get("values")
-                        # Dodajemy długość tylko, jeśli values jest faktycznie listą
                         if isinstance(values, list):
                             count += len(values)
 
         equipment_count_values.append(count)
     return equipment_count_values
-
-
-def extract_door_count(listings):
-    door_count_values = []
-    for listing in listings:
-        extracted_value = None
-        if isinstance(listing, dict):
-            details = listing.get("details")
-            if isinstance(details, list):
-                for detail in details:
-                    # Upewniamy się, że detail to słownik przed wywołaniem .get()
-                    if isinstance(detail, dict) and detail.get("key") == "door_count":
-                        extracted_value = detail.get("value")
-                        break
-
-        door_count_values.append(extracted_value)
-    return door_count_values
 
 
 def extract_seller_type(listings):
@@ -475,8 +451,6 @@ def build_dataframe(listings):
         "uszkodzony": extract_damage_status(listings),
 
         "ilosc_wyposazenia": extract_equipment_count(listings),
-
-        "liczba_drzwi": extract_door_count(listings),
 
         "typ_sprzedawcy": extract_seller_type(listings),
 

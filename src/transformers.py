@@ -137,8 +137,6 @@ class ScaledKNNImputer(BaseEstimator, OneToOneFeatureMixin, TransformerMixin):
         if hasattr(X, "columns"):
             self.feature_names_in_ = X.columns.to_numpy()
 
-        # Skalowanie przed dopasowaniem KNNImputer, aby odległość euklidesowa
-        # nie była zdominowana przez kolumny o większej skali (np. przebieg vs. wiek_auta)
         self.scaler_ = StandardScaler()
         scaled_values = self.scaler_.fit_transform(input_dataframe)
 
@@ -152,8 +150,6 @@ class ScaledKNNImputer(BaseEstimator, OneToOneFeatureMixin, TransformerMixin):
 
         scaled_values = self.scaler_.transform(input_dataframe)
         imputed_scaled_values = self.imputer_.transform(scaled_values)
-        # Odwrócenie skalowania, aby dalsze kroki potoku (feature engineering,
-        # finalne skalowanie) otrzymały wartości w oryginalnych jednostkach
         imputed_values = self.scaler_.inverse_transform(imputed_scaled_values)
 
         return pd.DataFrame(imputed_values, columns=input_dataframe.columns, index=input_dataframe.index)
@@ -163,8 +159,6 @@ def remove_outliers_by_group(X, y):
     dataframe_with_target = X.copy()
     dataframe_with_target["cena"] = y
 
-    # dropna=False, aby wiersze z brakującą marką nie trafiały do odrzuconej
-    # grupy NaN (co skutkowałoby porównaniem z NaN i usunięciem tych wierszy)
     lower_quantile = dataframe_with_target.groupby(["marka", "wiek_auta"], dropna=False)["cena"].transform(
         "quantile", 0.25
     )

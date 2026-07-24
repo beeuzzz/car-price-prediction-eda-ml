@@ -24,6 +24,8 @@ if __name__ == "__main__":
     best_model = train_and_save_model(
         X_train = X_train,
         y_train = y_train,
+        X_test = X_test,
+        y_test = y_test,
         preprocessor = preprocessor,
         target_model = MAIN_MODEL,
         numeric_columns = NUMERIC_COLUMNS,
