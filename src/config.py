@@ -97,7 +97,7 @@ XGBOOST_BEST_PARAMS = {
     'max_depth': 6,
     'min_child_weight': 3,
     'subsample': 0.85,
-    'colsample_bytree': 0.8
+    'colsample_bytree': 0.6
 }
 
 

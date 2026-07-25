@@ -159,16 +159,16 @@ def remove_outliers_by_group(X, y):
     dataframe_with_target = X.copy()
     dataframe_with_target["cena"] = y
 
-    lower_quantile = dataframe_with_target.groupby(["marka", "wiek_auta"], dropna=False)["cena"].transform(
+    lower_quantile = dataframe_with_target.groupby(["marka"], dropna=False)["cena"].transform(
         "quantile", 0.25
     )
-    upper_quantile = dataframe_with_target.groupby(["marka", "wiek_auta"], dropna=False)["cena"].transform(
+    upper_quantile = dataframe_with_target.groupby(["marka"], dropna=False)["cena"].transform(
         "quantile", 0.75
     )
     iqr = upper_quantile - lower_quantile
 
-    mask = (dataframe_with_target["cena"] >= (lower_quantile - 1.5 * iqr)) & (
-        dataframe_with_target["cena"] <= (upper_quantile + 1.5 * iqr)
+    mask = (dataframe_with_target["cena"] >= (lower_quantile - 2 * iqr)) & (
+        dataframe_with_target["cena"] <= (upper_quantile + 2 * iqr)
     )
 
     return X[mask], y[mask]

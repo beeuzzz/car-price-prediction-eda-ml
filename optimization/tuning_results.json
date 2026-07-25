@@ -1,7 +1,7 @@
 {
     "XGBoost": {
         "best_params": {
-            "Model__regressor__colsample_bytree": 0.8,
+            "Model__regressor__colsample_bytree": 0.6,
             "Model__regressor__learning_rate": 0.05,
             "Model__regressor__max_depth": 6,
             "Model__regressor__min_child_weight": 3,
@@ -9,33 +9,33 @@
             "Model__regressor__subsample": 0.85
         },
         "train_metrics": {
-            "MAPE": 18.02048338786384,
-            "MAE": 11792.16527244716,
-            "RMSE": 22425.71420010096
+            "MAPE": 18.13978364380792,
+            "MAE": 11766.71640997546,
+            "RMSE": 22310.418026080537
         },
         "test_metrics": {
-            "MAPE": 18.427340879473654,
-            "MAE": 12196.889561738783,
-            "RMSE": 24548.9310135037
+            "MAPE": 18.34360723566924,
+            "MAE": 11737.804948878205,
+            "RMSE": 22681.315728424226
         }
     },
     "RandomForest": {
         "best_params": {
             "Model__regressor__max_depth": null,
             "Model__regressor__max_features": null,
-            "Model__regressor__min_samples_leaf": 2,
+            "Model__regressor__min_samples_leaf": 1,
             "Model__regressor__min_samples_split": 2,
-            "Model__regressor__n_estimators": 400
+            "Model__regressor__n_estimators": 300
         },
         "train_metrics": {
-            "MAPE": 19.914777888683467,
-            "MAE": 13268.035420576653,
-            "RMSE": 25250.84989553174
+            "MAPE": 20.039217361265944,
+            "MAE": 13083.88112758742,
+            "RMSE": 24624.78569727917
         },
         "test_metrics": {
-            "MAPE": 19.991509989627037,
-            "MAE": 13782.676668239863,
-            "RMSE": 27880.08405117199
+            "MAPE": 19.935856849304432,
+            "MAE": 13312.022463503721,
+            "RMSE": 26388.849837892267
         }
     },
     "LinearRegression": {
@@ -44,14 +44,14 @@
             "Model__regressor__positive": false
         },
         "train_metrics": {
-            "MAPE": 20.741105046062085,
-            "MAE": 13572.56274303303,
-            "RMSE": 27748.591991165402
+            "MAPE": 21.16950898563284,
+            "MAE": 13748.438015495418,
+            "RMSE": 30825.599580828122
         },
         "test_metrics": {
-            "MAPE": 20.956122447045317,
-            "MAE": 14169.811133880306,
-            "RMSE": 28000.8231010857
+            "MAPE": 21.184543706384986,
+            "MAE": 14092.113171717712,
+            "RMSE": 27846.513929404693
         }
     }
 }
