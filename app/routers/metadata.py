@@ -8,22 +8,17 @@ router = APIRouter(prefix="/api/v1", tags=["metadata"])
 
 @router.get("/form-options", response_model=FormOptionsOut)
 def form_options() -> FormOptionsOut:
-    """Wszystko, co frontend potrzebuje do zbudowania formularza.
-
-    Listy pochodzą z tego samego artefaktu, z którego korzysta predykcja, więc
-    formularz nie może zaproponować wartości nieznanej modelowi.
-    """
     return FormOptionsOut(
-        kategorie=model_service.category_options(),
-        etykiety_kategorii=labels.CATEGORY_LABELS,
-        etykiety_wartosci=labels.VALUE_LABELS,
-        zakresy=model_service.numeric_ranges(),
-        ograniczenia=model_service.constraints(),
-        wyposazenie=[
-            {"nazwa": column, "etykieta": labels.EQUIPMENT_LABELS[column]}
-            for column in model_service.EQUIPMENT_FLAGS
+        categories=model_service.category_options(),
+        category_labels=labels.CATEGORY_LABELS,
+        value_labels=labels.VALUE_LABELS,
+        ranges=model_service.numeric_ranges(),
+        constraints=model_service.constraints(),
+        equipment=[
+            {"name": field, "label": labels.EQUIPMENT_LABELS[field]}
+            for field in model_service.EQUIPMENT_FIELDS
         ],
-        presety_wyposazenia=labels.EQUIPMENT_PRESETS,
+        equipment_presets=labels.EQUIPMENT_PRESETS,
     )
 
 

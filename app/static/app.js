@@ -2,34 +2,35 @@
 
 const LAYOUT = {
     'section-basic': [
-        { kind: 'select', name: 'marka', required: true },
-        { kind: 'number', name: 'rok_produkcji', label: 'Rok produkcji', required: true, step: 1 },
-        { kind: 'number', name: 'przebieg', label: 'Przebieg', unit: 'km', required: true, step: 1000 },
-        { kind: 'select', name: 'paliwo', required: true }
+        { kind: 'select', name: 'brand', required: true },
+        { kind: 'number', name: 'production_year', label: 'Production year', required: true, step: 1, raw: true },
+        { kind: 'number', name: 'mileage', label: 'Mileage', unit: 'km', required: true, step: 1000 },
+        { kind: 'select', name: 'fuel_type', required: true }
     ],
     'section-technical': [
-        { kind: 'number', name: 'pojemnosc_silnika', label: 'Pojemność silnika', unit: 'cm³', required: true, step: 1 },
-        { kind: 'number', name: 'moc_silnika', label: 'Moc silnika', unit: 'KM', required: true, step: 1 },
-        { kind: 'select', name: 'skrzynia_biegow', required: true },
-        { kind: 'select', name: 'naped', required: true },
-        { kind: 'select', name: 'nadwozie', required: true },
-        { kind: 'select', name: 'kolor', required: true }
+        { kind: 'number', name: 'engine_capacity', label: 'Engine capacity', unit: 'cm³', required: true, step: 1 },
+        { kind: 'number', name: 'engine_power', label: 'Engine power', unit: 'HP', required: true, step: 1 },
+        { kind: 'select', name: 'gearbox', required: true },
+        { kind: 'select', name: 'drive', required: true },
+        { kind: 'select', name: 'body_type', required: true },
+        { kind: 'select', name: 'color', required: true }
     ],
     'section-sale': [
-        { kind: 'select', name: 'wojewodztwo' },
-        { kind: 'select', name: 'typ_sprzedawcy' }
+        { kind: 'select', name: 'voivodeship' },
+        { kind: 'select', name: 'seller_type' }
     ]
 };
 
-const NUMERIC_FIELDS = ['rok_produkcji', 'przebieg', 'pojemnosc_silnika', 'moc_silnika'];
+const NUMERIC_FIELDS = ['production_year', 'mileage', 'engine_capacity', 'engine_power'];
 
 let options = null;
 
 const allFields = () => Object.values(LAYOUT).flat();
 const fieldByName = (name) => allFields().find((field) => field.name === name);
 
-const formatNumber = (value) => new Intl.NumberFormat('pl-PL').format(value);
+const formatNumber = (value) => new Intl.NumberFormat('en-US').format(value);
 const formatPln = (value) => formatNumber(value) + ' PLN';
+const formatFieldNumber = (field, value) => (field.raw ? String(value) : formatNumber(value));
 
 function buildLabel(forId, text, { required = false } = {}) {
     const labelEl = document.createElement('label');
@@ -57,9 +58,12 @@ function attachError(wrapper, name) {
 }
 
 function buildSelect(field) {
-    const values = options.kategorie[field.name] || [];
-    const valueLabels = options.etykiety_wartosci[field.name] || {};
-    const label = field.label || options.etykiety_kategorii[field.name] || field.name;
+    const valueLabels = options.value_labels[field.name] || {};
+    const label = field.label || options.category_labels[field.name] || field.name;
+
+    const values = (options.categories[field.name] || [])
+        .map((value) => ({ value, label: valueLabels[value] || value }))
+        .sort((a, b) => a.label.localeCompare(b.label, 'en'));
 
     const wrapper = buildFieldShell(field, label);
 
@@ -69,13 +73,13 @@ function buildSelect(field) {
 
     const blank = document.createElement('option');
     blank.value = '';
-    blank.textContent = field.required ? '— wybierz —' : '— nie podano —';
+    blank.textContent = field.required ? '— select —' : '— not specified —';
     select.appendChild(blank);
 
-    for (const value of values) {
+    for (const item of values) {
         const option = document.createElement('option');
-        option.value = value;
-        option.textContent = valueLabels[value] || value;
+        option.value = item.value;
+        option.textContent = item.label;
         select.appendChild(option);
     }
 
@@ -85,7 +89,7 @@ function buildSelect(field) {
 }
 
 function buildNumber(field) {
-    const range = options.zakresy[field.name] || {};
+    const range = options.ranges[field.name] || {};
     const wrapper = buildFieldShell(field, field.label || field.name);
 
     const input = document.createElement('input');
@@ -97,7 +101,7 @@ function buildNumber(field) {
     if (field.step) input.step = field.step;
 
     if (range.min !== undefined) {
-        const span = `${formatNumber(range.min)} – ${formatNumber(range.max)}`;
+        const span = `${formatFieldNumber(field, range.min)} – ${formatFieldNumber(field, range.max)}`;
         input.placeholder = field.unit ? `${span} ${field.unit}` : span;
     }
 
@@ -108,17 +112,17 @@ function buildNumber(field) {
 
 function buildEquipmentCheckboxes() {
     const container = document.getElementById('section-equipment');
-    for (const item of options.wyposazenie) {
+    for (const item of options.equipment) {
         const label = document.createElement('label');
         label.className = 'checkbox';
 
         const input = document.createElement('input');
         input.type = 'checkbox';
-        input.dataset.equipment = item.nazwa;
-        input.id = 'eq_' + item.nazwa;
+        input.dataset.equipment = item.name;
+        input.id = 'eq_' + item.name;
 
         const text = document.createElement('span');
-        text.textContent = item.etykieta;
+        text.textContent = item.label;
 
         label.append(input, text);
         container.appendChild(label);
@@ -131,17 +135,17 @@ function buildImportedCheckbox() {
     const wrapper = document.createElement('div');
     wrapper.className = 'field';
 
-    wrapper.appendChild(buildLabel('importowany', 'Pochodzenie'));
+    wrapper.appendChild(buildLabel('imported', 'Origin'));
 
     const label = document.createElement('label');
     label.className = 'checkbox';
 
     const input = document.createElement('input');
     input.type = 'checkbox';
-    input.id = 'importowany';
+    input.id = 'imported';
 
     const text = document.createElement('span');
-    text.textContent = 'Sprowadzony z zagranicy';
+    text.textContent = 'Imported';
 
     label.append(input, text);
     wrapper.appendChild(label);
@@ -150,18 +154,18 @@ function buildImportedCheckbox() {
 
 function setupEquipmentLevel() {
     const field = document.getElementById('equipment-level');
-    const slider = document.getElementById('poziom_wyposazenia');
-    const output = document.getElementById('poziom_wyposazenia_value');
-    const skip = document.getElementById('poziom_wyposazenia_skip');
+    const slider = document.getElementById('equipment_level');
+    const output = document.getElementById('equipment_level_value');
+    const skip = document.getElementById('equipment_level_skip');
     const presets = document.getElementById('equipment-presets');
 
-    for (const preset of options.presety_wyposazenia) {
+    for (const preset of options.equipment_presets) {
         const button = document.createElement('button');
         button.type = 'button';
-        button.textContent = `${preset.etykieta} (${preset.wartosc})`;
+        button.textContent = `${preset.label} (${preset.value})`;
         button.addEventListener('click', () => {
-            slider.value = preset.wartosc;
-            output.textContent = preset.wartosc;
+            slider.value = preset.value;
+            output.textContent = preset.value;
         });
         presets.appendChild(button);
     }
@@ -225,7 +229,7 @@ function validate() {
 
         if (raw === '') {
             if (field.required) {
-                setFieldError(field.name, field.kind === 'select' ? 'Wybierz wartość z listy.' : 'Podaj wartość.');
+                setFieldError(field.name, field.kind === 'select' ? 'Select a value from the list.' : 'Enter a value.');
                 firstInvalid = firstInvalid || element;
             }
             continue;
@@ -233,16 +237,16 @@ function validate() {
 
         if (field.kind !== 'number') continue;
 
-        const range = options.zakresy[field.name] || {};
+        const range = options.ranges[field.name] || {};
         const value = Number(raw);
 
         if (Number.isNaN(value)) {
-            setFieldError(field.name, 'Podaj liczbę.');
+            setFieldError(field.name, 'Enter a number.');
             firstInvalid = firstInvalid || element;
         } else if (value < range.min || value > range.max) {
             setFieldError(
                 field.name,
-                `Model obsługuje zakres ${formatNumber(range.min)} – ${formatNumber(range.max)}.`
+                `The model supports the range ${formatFieldNumber(field, range.min)} – ${formatFieldNumber(field, range.max)}.`
             );
             firstInvalid = firstInvalid || element;
         }
@@ -257,7 +261,7 @@ function validate() {
 }
 
 function collectPayload() {
-    const payload = { wyposazenie: {} };
+    const payload = { equipment: {} };
 
     for (const field of allFields()) {
         const raw = document.getElementById(field.name).value.trim();
@@ -266,14 +270,14 @@ function collectPayload() {
         payload[field.name] = NUMERIC_FIELDS.includes(field.name) ? Number(raw) : raw;
     }
 
-    payload.importowany = document.getElementById('importowany').checked;
+    payload.imported = document.getElementById('imported').checked;
 
     for (const input of document.querySelectorAll('[data-equipment]')) {
-        payload.wyposazenie[input.dataset.equipment] = input.checked;
+        payload.equipment[input.dataset.equipment] = input.checked;
     }
 
-    if (!document.getElementById('poziom_wyposazenia_skip').checked) {
-        payload.poziom_wyposazenia = Number(document.getElementById('poziom_wyposazenia').value);
+    if (!document.getElementById('equipment_level_skip').checked) {
+        payload.equipment_level = Number(document.getElementById('equipment_level').value);
     }
 
     return payload;
@@ -298,9 +302,9 @@ function showSummaryErrors(messages) {
 function showServerErrors(data) {
     const leftovers = [];
 
-    for (const entry of data.pola || []) {
-        if (!fieldByName(entry.pole) || !setFieldError(entry.pole, entry.komunikat)) {
-            leftovers.push(`${entry.pole}: ${entry.komunikat}`);
+    for (const entry of data.fields || []) {
+        if (!fieldByName(entry.field) || !setFieldError(entry.field, entry.message)) {
+            leftovers.push(`${entry.field}: ${entry.message}`);
         }
     }
 
@@ -315,13 +319,13 @@ function showServerErrors(data) {
 function showResult(data) {
     document.getElementById('errors').hidden = true;
 
-    document.getElementById('result-price').textContent = formatPln(data.przewidywana_cena);
+    document.getElementById('result-price').textContent = formatPln(data.predicted_price);
     document.getElementById('result-range').textContent =
-        `Prawdopodobny zakres: ${formatPln(data.przedzial.od)} – ${formatPln(data.przedzial.do)}`;
+        `Likely range: ${formatPln(data.price_range.low)} – ${formatPln(data.price_range.high)}`;
 
     const warnings = document.getElementById('result-warnings');
     warnings.replaceChildren();
-    for (const warning of data.ostrzezenia) {
+    for (const warning of data.warnings) {
         const item = document.createElement('li');
         item.textContent = warning;
         warnings.appendChild(item);
@@ -340,7 +344,7 @@ async function handleSubmit(event) {
 
     const button = document.getElementById('submit-button');
     button.disabled = true;
-    button.textContent = 'Liczę…';
+    button.textContent = 'Calculating…';
 
     try {
         const response = await fetch('/api/v1/predict', {
@@ -353,16 +357,16 @@ async function handleSubmit(event) {
 
         if (response.ok) {
             showResult(data);
-        } else if (data.pola) {
+        } else if (data.fields) {
             showServerErrors(data);
         } else {
-            showSummaryErrors([data.blad || data.detail || 'Nieznany błąd serwera']);
+            showSummaryErrors([data.error || data.detail || 'Unknown server error']);
         }
     } catch (error) {
-        showSummaryErrors(['Nie udało się połączyć z serwerem: ' + error.message]);
+        showSummaryErrors(['Could not connect to the server: ' + error.message]);
     } finally {
         button.disabled = false;
-        button.textContent = 'Wyceń pojazd';
+        button.textContent = 'Estimate price';
     }
 }
 
@@ -371,32 +375,32 @@ async function loadModelInfo() {
     if (!response.ok) return;
 
     const info = await response.json();
-    const trained = new Date(info.train_timestamp).toLocaleDateString('pl-PL');
+    const trained = new Date(info.train_timestamp).toLocaleDateString('en-US');
 
     document.getElementById('model-info').innerHTML =
-        `Model <strong>${info.model_name}</strong>, ${info.liczba_cech_wejsciowych} cech wejściowych, ` +
-        `wytrenowany ${trained} na ${info.train_shape[0]} ogłoszeniach. ` +
-        `Średni błąd procentowy na zbiorze testowym: <strong>${info.metryki_testowe.MAPE}%</strong> ` +
-        `(MAE ${formatPln(info.metryki_testowe.MAE)}). Wycena jest szacunkiem, nie ofertą.`;
+        `Model <strong>${info.model_name}</strong>, ${info.input_feature_count} input features, ` +
+        `trained on ${trained} on ${info.train_shape[0]} listings. ` +
+        `Mean percentage error on the test set: <strong>${info.test_metrics.MAPE}%</strong> ` +
+        `(MAE ${formatPln(info.test_metrics.MAE)}). The valuation is an estimate, not an offer.`;
 }
 
 function handleReset() {
     setTimeout(() => {
         clearErrors();
         document.getElementById('result').hidden = true;
-        const slider = document.getElementById('poziom_wyposazenia');
-        document.getElementById('poziom_wyposazenia_value').textContent = slider.value;
-        document.getElementById('poziom_wyposazenia_skip').dispatchEvent(new Event('change'));
+        const slider = document.getElementById('equipment_level');
+        document.getElementById('equipment_level_value').textContent = slider.value;
+        document.getElementById('equipment_level_skip').dispatchEvent(new Event('change'));
     }, 0);
 }
 
 async function init() {
     try {
         const response = await fetch('/api/v1/form-options');
-        if (!response.ok) throw new Error('serwer zwrócił ' + response.status);
+        if (!response.ok) throw new Error('server returned ' + response.status);
         options = await response.json();
     } catch (error) {
-        showSummaryErrors(['Nie udało się pobrać konfiguracji formularza: ' + error.message]);
+        showSummaryErrors(['Could not load the form configuration: ' + error.message]);
         return;
     }
 

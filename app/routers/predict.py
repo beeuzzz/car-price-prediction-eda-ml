@@ -15,17 +15,17 @@ def predict(payload: CarFeaturesIn) -> PredictionOut:
     if not model_service.is_ready():
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail="Model nie jest załadowany",
+            detail="Model is not loaded",
         )
 
     result = model_service.predict(payload)
 
     logger.info(
-        "predykcja marka=%s rocznik=%s przebieg=%.0f -> %d PLN",
-        payload.marka,
-        payload.rok_produkcji,
-        payload.przebieg,
-        result["przewidywana_cena"],
+        "prediction brand=%s year=%s mileage=%.0f -> %d PLN",
+        payload.brand,
+        payload.production_year,
+        payload.mileage,
+        result["predicted_price"],
     )
 
     return PredictionOut(**result)

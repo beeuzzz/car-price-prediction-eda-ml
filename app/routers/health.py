@@ -15,4 +15,4 @@ def readiness(response: Response) -> dict[str, object]:
     ready = model_service.is_ready()
     if not ready:
         response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
-    return {"status": "ready" if ready else "model niezaładowany", "model_loaded": ready}
+    return {"status": "ready" if ready else "model not loaded", "model_loaded": ready}
