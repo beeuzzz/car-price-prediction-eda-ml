@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Used car valuation</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <header class="site-header">
+        <h1>Estimate your vehicle's value</h1>
+        <p class="subtitle">
+            Market price estimation for a used vehicle, based on a model trained on listings
+            from the Polish second-hand market.
+        </p>
+    </header>
+
+    <main>
+        <form id="prediction-form" novalidate>
+            <fieldset>
+                <legend>Basics</legend>
+                <div class="grid" id="section-basic"></div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Technical details</legend>
+                <div class="grid" id="section-technical"></div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Equipment</legend>
+                <div class="field slider-field" id="equipment-level">
+                    <label for="equipment_level">
+                        Equipment level
+                        <span class="hint">number of extras in the listing</span>
+                    </label>
+                    <div class="slider-row">
+                        <input type="range" id="equipment_level" name="equipment_level"
+                               min="0" max="150" step="1" value="38">
+                        <output id="equipment_level_value">38</output>
+                    </div>
+                    <div class="presets" id="equipment-presets"></div>
+                    <label class="checkbox skip-equipment">
+                        <input type="checkbox" id="equipment_level_skip">
+                        <span>I don't know — use a typical value</span>
+                    </label>
+                </div>
+                <div class="checkbox-grid" id="section-equipment"></div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Sale</legend>
+                <div class="grid" id="section-sale"></div>
+            </fieldset>
+
+            <div class="actions">
+                <button type="submit" id="submit-button">Estimate price</button>
+                <button type="reset" class="secondary">Clear</button>
+            </div>
+        </form>
+
+        <section id="result" class="result" hidden aria-live="polite">
+            <p class="result-label">Estimated value</p>
+            <p class="price" id="result-price"></p>
+            <p class="range" id="result-range"></p>
+            <ul class="warnings" id="result-warnings"></ul>
+        </section>
+
+        <section id="errors" class="errors" hidden aria-live="assertive">
+            <p class="errors-title">Please correct the form</p>
+            <ul id="errors-list"></ul>
+        </section>
+    </main>
+
+    <footer id="model-info" class="site-footer"></footer>
+
+    <script src="/app.js"></script>
+</body>
+</html>

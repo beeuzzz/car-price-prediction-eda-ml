@@ -39,8 +39,7 @@ def build_preprocessing_pipeline():
 
             ('simple_imputer_cat',
                 SimpleImputer(strategy='most_frequent'),
-                ['wojewodztwo', 'paliwo', 'kolor', 'liczba_drzwi',
-                'typ_sprzedawcy']),
+                ['wojewodztwo', 'paliwo', 'kolor', 'typ_sprzedawcy']),
 
             ('simple_imputer_equipment',
                 SimpleImputer(strategy='most_frequent'),
@@ -72,7 +71,6 @@ def build_preprocessing_pipeline():
         remainder='passthrough',
         verbose_feature_names_out=False)
 
-    # 4. Feature Engineering
     feature_engineering_preprocessor = ColumnTransformer(
         transformers=[
             ('engineering1',
@@ -85,7 +83,6 @@ def build_preprocessing_pipeline():
         remainder='passthrough',
         verbose_feature_names_out=False)
 
-    # 5. Skalowanie
     scaling_preprocessor = ColumnTransformer(
         transformers=[
             ('skalowanie',
@@ -95,7 +92,6 @@ def build_preprocessing_pipeline():
         remainder='passthrough',
         verbose_feature_names_out=False)
 
-    # 6. Kodowanie
     encoding_preprocessor = ColumnTransformer(
         transformers=[
             ('one_hot_encoding',
@@ -109,7 +105,6 @@ def build_preprocessing_pipeline():
         remainder='passthrough',
         verbose_feature_names_out=False)
 
-    # 7. Finalny Pipeline
     preprocessing_pipeline = ImbPipeline([
         ('czyszczenie_outlierow', outlier_removal_step),
         ('imputacja_marki', brand_imputation_preprocessor),

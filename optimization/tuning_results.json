@@ -1,7 +1,7 @@
 {
     "XGBoost": {
         "best_params": {
-            "Model__regressor__colsample_bytree": 0.8,
+            "Model__regressor__colsample_bytree": 0.6,
             "Model__regressor__learning_rate": 0.05,
             "Model__regressor__max_depth": 6,
             "Model__regressor__min_child_weight": 3,
@@ -9,49 +9,49 @@
             "Model__regressor__subsample": 0.85
         },
         "train_metrics": {
-            "MAPE": 17.88423704949369,
-            "MAE": 11795.909460723911,
-            "RMSE": 22534.31972938003
+            "MAPE": 18.13978364380792,
+            "MAE": 11766.71640997546,
+            "RMSE": 22310.418026080537
         },
         "test_metrics": {
-            "MAPE": 18.17136180011735,
-            "MAE": 12056.94610088141,
-            "RMSE": 24569.912205372817
+            "MAPE": 18.34360723566924,
+            "MAE": 11737.804948878205,
+            "RMSE": 22681.315728424226
         }
     },
     "RandomForest": {
         "best_params": {
-            "Model__regressor__max_depth": 15,
+            "Model__regressor__max_depth": null,
             "Model__regressor__max_features": null,
-            "Model__regressor__min_samples_leaf": 2,
+            "Model__regressor__min_samples_leaf": 1,
             "Model__regressor__min_samples_split": 2,
-            "Model__regressor__n_estimators": 400
+            "Model__regressor__n_estimators": 300
         },
         "train_metrics": {
-            "MAPE": 19.81342628532285,
-            "MAE": 13260.664920594563,
-            "RMSE": 25232.11474616295
+            "MAPE": 20.039217361265944,
+            "MAE": 13083.88112758742,
+            "RMSE": 24624.78569727917
         },
         "test_metrics": {
-            "MAPE": 19.9084732916857,
-            "MAE": 13754.21422726544,
-            "RMSE": 27805.755596455354
+            "MAPE": 19.935856849304432,
+            "MAE": 13312.022463503721,
+            "RMSE": 26388.849837892267
         }
     },
     "LinearRegression": {
         "best_params": {
-            "Model__regressor__fit_intercept": false,
+            "Model__regressor__fit_intercept": true,
             "Model__regressor__positive": false
         },
         "train_metrics": {
-            "MAPE": 20.75097745186558,
-            "MAE": 13568.6933219757,
-            "RMSE": 28092.347058570907
+            "MAPE": 21.16950898563284,
+            "MAE": 13748.438015495418,
+            "RMSE": 30825.599580828122
         },
         "test_metrics": {
-            "MAPE": 20.775198157241903,
-            "MAE": 14115.823463787865,
-            "RMSE": 28253.166374074524
+            "MAPE": 21.184543706384986,
+            "MAE": 14092.113171717712,
+            "RMSE": 27846.513929404693
         }
     }
 }

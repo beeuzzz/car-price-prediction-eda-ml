@@ -26,8 +26,7 @@ BASIC_CATEGORICAL_COLUMNS = [
     'wojewodztwo',
     'nadwozie',
     'kolor',
-    'typ_sprzedawcy',
-    'liczba_drzwi'
+    'typ_sprzedawcy'
 ]
 EQUIPMENT_CATEGORICAL_COLUMNS = [
     'skorzana_tapicerka',

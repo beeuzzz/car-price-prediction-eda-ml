@@ -44,22 +44,17 @@ def search_hyperparameters(X_train, y_train, preprocessor, config_grid):
 
 
 def save_results_to_json(best_params: dict, best_metric_scores: dict, best_indices: dict, test_metrics: dict, output_filename: str):
-    # Inicjalizacja głównego słownika przechowującego dane wszystkich modeli
     final_results = {}
 
-    # Dodanie .items(), aby poprawnie iterować po słowniku
     for model_name, params in best_params.items():
 
-        # Pobranie indexu i wyników CV dla konkretnego modelu
         index = best_indices[model_name]
         cv_results = best_metric_scores[model_name]
 
-        # Wyciągnięcie metryk. Funkcja abs() zamienia wartości negatywne na pozytywne
         mape = abs(cv_results['mean_test_MAPE'][index]) * 100
         mae = abs(cv_results['mean_test_MAE'][index])
         rmse = abs(cv_results['mean_test_RMSE'][index])
 
-        # Zapisanie danych modelu do głównego słownika
         final_results[model_name] = {
             'best_params': params,
             'train_metrics': {
@@ -70,7 +65,6 @@ def save_results_to_json(best_params: dict, best_metric_scores: dict, best_indic
             'test_metrics': test_metrics[model_name]
         }
 
-    # Zapis całego słownika do pliku JSON na samym końcu
     current_file_path = Path(__file__).resolve()
     output_filepath = current_file_path.parent / output_filename
 
