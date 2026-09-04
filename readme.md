@@ -33,7 +33,7 @@ The training data comes from public car listings on Otomoto. The data was collec
 | **Brand** | Categorical | Car manufacturer. It shows the car's prestige and market segment. |
 | **Gearbox** | Categorical | Type of transmission (e.g., manual, automatic). |
 | **Fuel type** | Categorical | Type of fuel (e.g., Petrol, Diesel, LPG, Hybrid, Electric). |
-| **Drivetrain** | Categorical | Type of driven axle (e.g., front-wheel, rear-wheel, 4x4). |
+| **Drive** | Categorical | Type of driven axle (e.g., front-wheel, rear-wheel, 4x4). |
 | **Voivodeship** | Categorical | Polish region where the car is registered or sold. |
 | **Body type** | Categorical | Type of car body (e.g., Sedan, Estate, SUV, Hatchback). |
 | **Color** | Categorical | Color of the car's paint. |
